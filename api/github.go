@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"encoding/json"
+	"github-activity/models"
 )
 
-func FetchUserActivity(username string) ([]byte, error) {
+func FetchUserActivity(username string) ([]models.Event, error) {
 	url := fmt.Sprintf("https://api.github.com/users/%s/events", username)
 
 	response, err := http.Get(url)
@@ -15,6 +17,10 @@ func FetchUserActivity(username string) ([]byte, error) {
 	}
 
 	defer response.Body.Close()
+
+	if response.StatusCode == http.StatusNotFound {
+		return nil, fmt.Errorf("user not found: %s", username)
+	}
 
 	if response.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("failed with status: %d", response.StatusCode)
@@ -25,5 +31,12 @@ func FetchUserActivity(username string) ([]byte, error) {
 		return nil, fmt.Errorf("failed to read response body: %w", err)
 	}
 
-	return body, nil
+	var events []models.Event;
+
+	err = json.Unmarshal(body, &events)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse json %s", err)
+	}
+
+	return events, nil
 }

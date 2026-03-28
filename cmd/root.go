@@ -17,11 +17,17 @@ func Execute() {
 
 	fmt.Println("Fetching repositories for user: ", username)
 
-	response, err := api.FetchUserActivity(username)
+	events, err := api.FetchUserActivity(username)
 	if err != nil {
 		fmt.Println("Error fetching user activity: ", err)
 		return
 	}
 
-	fmt.Println("User activity: ", string(response))
+	for _, event := range events {
+		fmt.Println("--------------------------------------------")
+		fmt.Println("Type : ", event.Type)
+		fmt.Println("Repo :", event.Repo.Name)
+		fmt.Println("Commits : ", event.Payload.Commits)
+		fmt.Println("--------------------------------------------")
+	}
 }
