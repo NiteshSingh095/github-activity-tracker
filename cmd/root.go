@@ -24,6 +24,11 @@ func Execute() {
 		return
 	}
 
+	if len(events) == 0 {
+		fmt.Println("No recent activity found")
+		return
+	}
+
 	for _, event := range events {
 		fmt.Println("--------------------------------------------")
 		msg := utils.FormatEvents(event)

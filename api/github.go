@@ -22,6 +22,10 @@ func FetchUserActivity(username string) ([]models.Event, error) {
 		return nil, fmt.Errorf("user not found: %s", username)
 	}
 
+	if response.StatusCode == http.StatusForbidden {
+		return nil, fmt.Errorf("API rate limit exceeded, try again later")
+	}
+
 	if response.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("failed with status: %d", response.StatusCode)
 	}
