@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"github-activity/api"
+	"github-activity/utils"
 	"os"
 )
 
@@ -25,9 +26,8 @@ func Execute() {
 
 	for _, event := range events {
 		fmt.Println("--------------------------------------------")
-		fmt.Println("Type : ", event.Type)
-		fmt.Println("Repo :", event.Repo.Name)
-		fmt.Println("Commits : ", event.Payload.Commits)
+		msg := utils.FormatEvents(event)
+		fmt.Println(msg)
 		fmt.Println("--------------------------------------------")
 	}
 }
